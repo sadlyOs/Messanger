@@ -5,8 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 app = FastAPI()
 manager = ConnectManager()
-async def get_manager(manager: WebSocket):
-    return ConnectManager(websocket=manager)
+
 
 @app.websocket("/communicate")
 async def endpoint_websocket(websocket: WebSocket, manager: Annotated[ConnectManager, Depends(get_manager)]):
