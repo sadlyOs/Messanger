@@ -1,6 +1,7 @@
 from typing import Annotated
 from fastapi import FastAPI, WebSocket, Depends, WebSocketDisconnect, HTTPException
 from app.manager import ConnectManager
+from fastapi.middleware.cors import CORSMiddleware
 import os
 app = FastAPI()
 
@@ -35,20 +36,12 @@ async def websocket_endpoint(client_id: int, websocket: WebSocket, manager: Anno
         manager.disconnect()
         await manager.broadcast(f"{client_id}: Покинул чат")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Измените на список доменов вашего фронтенда
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-
-items = {"foo": {"name": "Foo", "description": "A test item"}}
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: str):
-    if item_id not in items:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return items[item_id]
-
-@app.post("/items/{item_id}")
-async def create_item(item_id: str, item: dict):
-    if item_id in items:
-        raise HTTPException(status_code=400, detail="Item already exists")
-    items[item_id] = item
-    return item
