@@ -7,7 +7,7 @@ class ConnectManager:
 
     async def connect(self, websocket: WebSocket):
         """CONNECT EVENT"""
-        await self.websocket.accept()
+        await websocket.accept()
         loguru.logger.info(websocket.keys())
         self.active_connections.append(websocket)
         loguru.logger.info(self.active_connections)

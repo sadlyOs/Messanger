@@ -4,13 +4,13 @@ from app.manager import ConnectManager
 from fastapi.middleware.cors import CORSMiddleware
 import os
 app = FastAPI()
-
+manager = ConnectManager()
 async def get_manager(manager: WebSocket):
     return ConnectManager(websocket=manager)
 
 @app.websocket("/communicate")
 async def endpoint_websocket(websocket: WebSocket, manager: Annotated[ConnectManager, Depends(get_manager)]):
-    await manager.connect()
+    await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_text()
@@ -22,18 +22,18 @@ async def endpoint_websocket(websocket: WebSocket, manager: Annotated[ConnectMan
                 await manager.send_personal_message(data)
 
     except WebSocketDisconnect:
-        manager.disconnect()
+        manager.disconnect(websocket)
         await manager.send_personal_message("Bye!!!")
 
 @app.websocket("/wss/{client_id}")
-async def websocket_endpoint(client_id: int, websocket: WebSocket, manager: Annotated[ConnectManager, Depends(get_manager)]):
-    await manager.connect()
+async def websocket_endpoint(client_id: int, websocket: WebSocket):
+    await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_text()
             await manager.broadcast(f"{client_id}: {data}")
     except WebSocketDisconnect:
-        manager.disconnect()
+        manager.disconnect(websocket)
         await manager.broadcast(f"{client_id}: Покинул чат")
 
 app.add_middleware(
