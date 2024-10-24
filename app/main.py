@@ -25,7 +25,7 @@ async def endpoint_websocket(websocket: WebSocket, manager: Annotated[ConnectMan
         manager.disconnect()
         await manager.send_personal_message("Bye!!!")
 
-@app.websocket("/ws/{client_id}")
+@app.websocket("/wss/{client_id}")
 async def websocket_endpoint(client_id: int, websocket: WebSocket, manager: Annotated[ConnectManager, Depends(get_manager)]):
     await manager.connect()
     try:
