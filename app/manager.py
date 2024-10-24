@@ -17,6 +17,7 @@ class ConnectManager:
         await self.websocket.send_text(data=message)
         
     async def broadcast(self, message: str):
+        loguru.logger.info(self.active_connections)
         for connection in self.active_connections:
             await connection.send_text(message)
 

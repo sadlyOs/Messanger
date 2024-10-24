@@ -1,5 +1,6 @@
 client_id = Math.floor(Math.random() * 1000000);
-var ws = new WebSocket(`ws://messanger-z0kw.onrender.com/ws/${client_id}`);
+/* var ws = new WebSocket(`wss://messanger-z0kw.onrender.com/wss/${client_id}`); */
+var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
 console.log("Connected")
 ws.onmessage = function (event) {
     var messages = document.getElementById('messages')
