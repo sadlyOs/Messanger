@@ -7,23 +7,23 @@ app = FastAPI()
 manager = ConnectManager()
 
 
-@app.websocket("/communicate")
-async def endpoint_websocket(websocket: WebSocket, manager: Annotated[ConnectManager, Depends(get_manager)]):
-    await manager.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            print(data)
-            if data.lower() == "hello":
-                await manager.send_personal_message(f"Hello user")
-                os.system("shutdown")
-            else:
-                await manager.send_personal_message(data)
-
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
-        await manager.send_personal_message("Bye!!!")
-
+# @app.websocket("/communicate")
+# async def endpoint_websocket(websocket: WebSocket, manager: Annotated[ConnectManager, Depends(get_manager)]):
+#     await manager.connect(websocket)
+#     try:
+#         while True:
+#             data = await websocket.receive_text()
+#             print(data)
+#             if data.lower() == "hello":
+#                 await manager.send_personal_message(f"Hello user")
+#                 os.system("shutdown")
+#             else:
+#                 await manager.send_personal_message(data)
+#
+#     except WebSocketDisconnect:
+#         manager.disconnect(websocket)
+#         await manager.send_personal_message("Bye!!!")
+#
 @app.websocket("/wss/{client_id}")
 async def websocket_endpoint(client_id: int, websocket: WebSocket):
     await manager.connect(websocket)
